@@ -14,6 +14,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { validateEmail } from "../../../shared/utils/validation/email";
 import { validatePasswordLength } from "../../../shared/utils/validation/length";
 import useInput from "../../../hooks/input/useInput";
+import { useAppDispatch, useAppSelector } from "../../../hooks/redux/hooks";
+import { login, reset } from "../authSlice";
 const SigninForm = () => {
   const {
     text: email,
@@ -35,6 +37,21 @@ const SigninForm = () => {
     emailClearHandler();
     passwordClearHandler();
   };
+  const dispatch = useAppDispatch();
+  const { isLoading, isSuccess, isAuthenticated } = useAppSelector(
+    (state) => state.auth
+  );
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(reset());
+      clearForm();
+    }
+  }, [isSuccess, dispatch]);
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    navigate("/");
+  }, [isAuthenticated]);
   const onSubmitHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (emailHasError || passwordHasError) return;
@@ -42,7 +59,11 @@ const SigninForm = () => {
     if (email.length === 0 || password.length === 0) return;
 
     const loginUser = { email, password };
+    dispatch(login(loginUser));
   };
+  if (isLoading)
+    return <CircularProgress sx={{ marginTop: "64px" }} color="primary" />;
+
   return (
     <>
       <Box
