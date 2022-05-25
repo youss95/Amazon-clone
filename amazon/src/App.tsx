@@ -10,12 +10,13 @@ import Home from "./pages/Home";
 import Cart from "./pages/Cart";
 import Register from "./pages/Register";
 import Signin from "./pages/Signin";
+import PrivateRoute from "./features/auth/components/PrivateRoute";
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<PrivateRoute page={<Home />} />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/register" element={<Register />} />
           <Route path="/signin" element={<Signin />} />
