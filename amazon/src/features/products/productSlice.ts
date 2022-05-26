@@ -26,27 +26,30 @@ const modifyQtyByOne = (
   modificationType: "INCREMENT" | "DECREMENT"
 ) => {
   const previousCart = [...cart];
-
+  //장바구니에 상품을 추가할때 카트에 상품이 있다면
   const productInCart = previousCart.find(
     (product) => product._id === selectedProduct._id
   );
 
   let newCart = [];
-
+  //중복 상품이 없다면
   if (!productInCart) {
     previousCart.push({ ...selectedProduct, quantity: 1 });
     newCart = previousCart;
   } else {
+    //있다면
+    //filterCart :  타겟 상품외 카트의 상품들
     const filteredCart = previousCart.filter(
       (p) => p._id !== productInCart._id
     );
-
+    //카트에 존재하는 상품의 수량 + 1
     const modification = modificationType === "INCREMENT" ? 1 : -1;
     productInCart.quantity = productInCart?.quantity + modification;
-
+    //상품 수량 0개가 되었다면 (그 상품 삭제)
     if (productInCart.quantity === 0) {
       newCart = [...filteredCart];
     } else {
+      //타겟상품외 카트의 상품들 + 수량이 조정된 상품
       newCart = [...filteredCart, productInCart];
     }
   }
